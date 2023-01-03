@@ -30,3 +30,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// plain 파일 생성하지 않도록 설정
+jar {
+	enabled = false
+}
