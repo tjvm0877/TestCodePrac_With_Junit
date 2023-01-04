@@ -3,8 +3,10 @@ package com.hyun.TestCodePrac.dto;
 import com.hyun.TestCodePrac.Entity.Book;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class BookSaveReqDto {
 
 	private String title;
