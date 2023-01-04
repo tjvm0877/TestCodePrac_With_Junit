@@ -1,9 +1,9 @@
 package com.hyun.TestCodePrac.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +38,7 @@ class BookRepositoryTest {
 
 	// 1. 책 등록하기
 	@Test
-	@DisplayName("책 등록")
+	@DisplayName("등록")
 	public void 책_등록하기() {
 		/* given - 데이터 준비 */
 		String title = "Junit5";
@@ -91,10 +91,12 @@ class BookRepositoryTest {
 		assertEquals(author, bookPS.getAuthor());
 	}
 
+	// 4. 책 삭제
 	@Sql("classpath:db/tableInit.sql")
 	@Test
 	@DisplayName("삭제")
 	public void 책_삭제() {
+
 		/* given - 데이터 준비 */
 		Long id = 1L;
 
@@ -104,7 +106,25 @@ class BookRepositoryTest {
 		/* then - 검증 */
 		assertFalse(bookRepository.findById(id).isPresent());
 	}
-	// 4. 책 삭제
 
 	// 5. 책 수정
+	@Sql("classpath:db/tableInit.sql")
+	@Test
+	@DisplayName("수정")
+	public void 책_수정() {
+
+		/* given - 데이터 준비 */
+		Long id = 1L; // 수정 할 데이터
+		String title = "수정된 Junit5";
+		String author = "수정된 데이터";
+		Book book = new Book(id, title, author);
+
+		/* when - 테스트 실행 */
+		Book bookPS = bookRepository.save(book);
+
+		/* then - 검증 */
+		assertEquals(id, bookPS.getId());
+		assertEquals(title, bookPS.getTitle());
+		assertEquals(author, bookPS.getAuthor());
+	}
 }
