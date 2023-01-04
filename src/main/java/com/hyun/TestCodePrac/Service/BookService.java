@@ -11,6 +11,7 @@ import com.hyun.TestCodePrac.Entity.Book;
 import com.hyun.TestCodePrac.dto.BookRespDto;
 import com.hyun.TestCodePrac.dto.BookSaveReqDto;
 import com.hyun.TestCodePrac.repository.BookRepository;
+import com.hyun.TestCodePrac.util.MailSender;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,11 +20,18 @@ import lombok.RequiredArgsConstructor;
 public class BookService {
 
 	private final BookRepository bookRepository;
+	private final MailSender mailSender;
 
 	// 1. 책 등록
 	@Transactional(rollbackFor = RuntimeException.class)
 	public BookRespDto createBook(BookSaveReqDto dto) {
 		Book bookPS = bookRepository.save(dto.toEntity());
+
+		if (bookPS != null) {
+			if (!mailSender.send()) {
+				throw new RuntimeException("메일이 전송되지 않았습니다.");
+			}
+		}
 
 		return BookRespDto.from(bookPS);
 	}
