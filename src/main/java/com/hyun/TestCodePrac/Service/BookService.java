@@ -2,6 +2,7 @@ package com.hyun.TestCodePrac.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,14 @@ public class BookService {
 	}
 
 	// 3. 책 한 권 조회
+	@Transactional(readOnly = true)
+	public BookRespDto getBook(Long id) {
+		Book book = bookRepository.findById(id).orElseThrow(
+			() -> new IllegalArgumentException("해당 책을 찾을 수 없습니다.")
+		);
+
+		return BookRespDto.from(book);
+	}
 
 	// 4. 책 삭제
 
