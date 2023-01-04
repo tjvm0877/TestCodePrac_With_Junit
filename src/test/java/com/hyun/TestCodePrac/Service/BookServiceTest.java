@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,5 +76,28 @@ class BookServiceTest {
 		assertThat(bookRespDtoList.get(1).getTitle()).isEqualTo("Spring Boot");
 		assertThat(bookRespDtoList.get(0).getAuthor()).isEqualTo("hyun");
 		assertThat(bookRespDtoList.get(1).getAuthor()).isEqualTo("hyun");
+	}
+
+	@Test
+	@DisplayName("책 한권 조회")
+	void getBook() {
+		/* given - 데이터 준비 */
+		Long id = 1L;
+		Book book = Book.builder()
+			.id(1L)
+			.title("JUnit")
+			.author("hyun")
+			.build();
+		Optional<Book> bookOP = Optional.of(book);
+
+		// 가짜 객체의 행동 정의
+		when(bookRepository.findById(id)).thenReturn(bookOP);
+
+		/* when - 테스트 실행 */
+		BookRespDto bookRespDto = bookService.getBook(id);
+
+		/* then - 검증 */
+		assertThat(bookRespDto.getTitle()).isEqualTo(book.getTitle());
+		assertThat(bookRespDto.getAuthor()).isEqualTo(book.getAuthor());
 	}
 }
