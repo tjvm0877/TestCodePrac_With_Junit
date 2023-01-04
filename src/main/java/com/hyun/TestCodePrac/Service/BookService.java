@@ -44,11 +44,11 @@ public class BookService {
 	// 3. 책 한권 조회
 	@Transactional(readOnly = true)
 	public BookRespDto getBook(Long id) {
-		Book book = bookRepository.findById(id).orElseThrow(
+		Book bookOP = bookRepository.findById(id).orElseThrow(
 			() -> new IllegalArgumentException("해당 책을 찾을 수 없습니다.")
 		);
 
-		return BookRespDto.from(book);
+		return BookRespDto.from(bookOP);
 	}
 
 	// 4. 책 삭제
@@ -58,5 +58,12 @@ public class BookService {
 	}
 
 	// 5. 책 수정
-	
+	@Transactional(rollbackFor = RuntimeException.class)
+	public void updateBook(Long id, BookSaveReqDto dto) {
+		Book bookPS = bookRepository.findById(id).orElseThrow(
+			() -> new IllegalArgumentException("해당 책을 찾을 수 없습니다.")
+		);
+
+		bookPS.update(dto.getTitle(), dto.getAuthor());
+	} // 메서드 종료시에 더티채킹(flush)으로 업데이트
 }

@@ -2,6 +2,9 @@ package com.hyun.TestCodePrac.dto;
 
 import com.hyun.TestCodePrac.Entity.Book;
 
+import lombok.Getter;
+
+@Getter
 public class BookSaveReqDto {
 
 	private String title;
