@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.hyun.TestCodePrac.Entity.Book;
 
@@ -73,6 +74,7 @@ class BookRepositoryTest {
 	}
 
 	// 3. 책 한건보기
+	@Sql("classpath:db/tableInit.sql")
 	@Test
 	@DisplayName("한 건 조회")
 	public void 책_한건보기() {
@@ -89,7 +91,7 @@ class BookRepositoryTest {
 		assertEquals(author, bookPS.getAuthor());
 	}
 
-	// 4. 책 삭제
+	@Sql("classpath:db/tableInit.sql")
 	@Test
 	@DisplayName("삭제")
 	public void 책_삭제() {
@@ -102,6 +104,7 @@ class BookRepositoryTest {
 		/* then - 검증 */
 		assertFalse(bookRepository.findById(id).isPresent());
 	}
+	// 4. 책 삭제
 
 	// 5. 책 수정
 }
