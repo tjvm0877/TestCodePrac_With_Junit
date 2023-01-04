@@ -3,6 +3,7 @@ package com.hyun.TestCodePrac.repository;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +57,7 @@ class BookRepositoryTest {
 
 	// 2. 책 목록보기
 	@Test
-	@DisplayName("책 목록조회")
+	@DisplayName("목록조회")
 	public void 책_목록조회() {
 
 		/* given - 데이터 준비 */
@@ -73,7 +74,7 @@ class BookRepositoryTest {
 
 	// 3. 책 한건보기
 	@Test
-	@DisplayName("책 한 건 조회")
+	@DisplayName("한 건 조회")
 	public void 책_한건보기() {
 
 		/* given - 데이터 준비 */
@@ -87,7 +88,20 @@ class BookRepositoryTest {
 		assertEquals(title, bookPS.getTitle());
 		assertEquals(author, bookPS.getAuthor());
 	}
-	// 4. 책 수정
 
-	// 5. 책 삭제
+	// 4. 책 삭제
+	@Test
+	@DisplayName("삭제")
+	public void 책_삭제() {
+		/* given - 데이터 준비 */
+		Long id = 1L;
+
+		/* when - 테스트 실행 */
+		bookRepository.deleteById(id);
+
+		/* then - 검증 */
+		assertFalse(bookRepository.findById(id).isPresent());
+	}
+
+	// 5. 책 수정
 }
