@@ -1,5 +1,8 @@
 package com.hyun.TestCodePrac.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,17 @@ public class BookService {
 	}
 
 	// 2. 책 목록조회
+	@Transactional(readOnly = true)
+	public List<BookRespDto> getBookList() {
+		List<Book> bookList = bookRepository.findAll();
+
+		List<BookRespDto> response = new ArrayList<>();
+		for (Book book : bookList) {
+			response.add(BookRespDto.from(book));
+		}
+
+		return response;
+	}
 
 	// 3. 책 한 권 조회
 
