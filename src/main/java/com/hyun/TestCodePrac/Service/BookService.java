@@ -41,7 +41,7 @@ public class BookService {
 		return response;
 	}
 
-	// 3. 책 한 권 조회
+	// 3. 책 한권 조회
 	@Transactional(readOnly = true)
 	public BookRespDto getBook(Long id) {
 		Book book = bookRepository.findById(id).orElseThrow(
@@ -52,6 +52,11 @@ public class BookService {
 	}
 
 	// 4. 책 삭제
+	@Transactional(rollbackFor = RuntimeException.class)
+	public void deleteBook(Long id) {
+		bookRepository.deleteById(id);
+	}
 
 	// 5. 책 수정
+	
 }
