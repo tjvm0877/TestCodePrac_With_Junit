@@ -29,11 +29,6 @@ class BookRepositoryTest {
 			.author(author)
 			.build();
 		bookRepository.save(book);
-		System.out.println("==================================" + book.getId());
-		List<Book> books = bookRepository.findAll();
-		for (Book onebook : books) {
-			System.out.println(onebook.toString());
-		}
 	}
 
 	// 1. 책 등록하기
