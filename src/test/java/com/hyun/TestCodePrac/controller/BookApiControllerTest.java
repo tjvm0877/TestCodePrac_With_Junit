@@ -1,8 +1,6 @@
 package com.hyun.TestCodePrac.controller;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.lang.annotation.Documented;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +27,7 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
 // Controller 단위 테스트가 아닌 통합 테스트
+@ActiveProfiles("dev")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BookApiControllerTest {
 
@@ -62,7 +62,7 @@ class BookApiControllerTest {
 	@Test
 	public void saveBookTest() throws JsonProcessingException {
 		/* given - 데이터 준비 */
-		BookSaveReqDto bookSaveReqDto = new BookSaveReqDto("스프링", "hyun");
+		BookSaveReqDto bookSaveReqDto = new BookSaveReqDto("Spring", "hyun");
 		String body = om.writeValueAsString(bookSaveReqDto);
 
 		/* when - 테스트 실행 */
@@ -74,7 +74,7 @@ class BookApiControllerTest {
 		String title = dc.read("$.data.title");
 		String author = dc.read("$.data.author");
 
-		assertThat(title).isEqualTo("스프링");
+		assertThat(title).isEqualTo("Spring");
 		assertThat(author).isEqualTo("hyun");
 	}
 
@@ -86,7 +86,7 @@ class BookApiControllerTest {
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = rt.exchange("/api/v1/book", HttpMethod.GET, request,String.class);
+		ResponseEntity<String> response = rt.exchange("/api/v1/book", HttpMethod.GET, request, String.class);
 
 		/* then - 검증 */
 		DocumentContext dc = JsonPath.parse(response.getBody());
@@ -107,7 +107,7 @@ class BookApiControllerTest {
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = rt.exchange("/api/v1/book/1", HttpMethod.GET, request,String.class);
+		ResponseEntity<String> response = rt.exchange("/api/v1/book/1", HttpMethod.GET, request, String.class);
 
 		/* then - 검증 */
 		DocumentContext dc = JsonPath.parse(response.getBody());
@@ -128,7 +128,7 @@ class BookApiControllerTest {
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = rt.exchange("/api/v1/book/1", HttpMethod.GET, request,String.class);
+		ResponseEntity<String> response = rt.exchange("/api/v1/book/1", HttpMethod.GET, request, String.class);
 
 		/* then - 검증 */
 		DocumentContext dc = JsonPath.parse(response.getBody());
@@ -136,5 +136,26 @@ class BookApiControllerTest {
 		assertThat(result).isEqualTo("success");
 	}
 
-	
+	@Sql("classpath:db/tableInit.sql")
+	@DisplayName("책 수정")
+	@Test
+	public void updateBookTest() throws JsonProcessingException {
+		/* given - 데이터 준비 */
+		Long id = 1L;
+		BookSaveReqDto bookSaveReqDto = new BookSaveReqDto("Spring", "hyun");
+		String body = om.writeValueAsString(bookSaveReqDto);
+
+		/* when - 테스트 실행 */
+		HttpEntity<String> request = new HttpEntity<>(body, headers);
+		ResponseEntity<String> response = rt.exchange("/api/v1/book/" + id, HttpMethod.PUT, request, String.class);
+
+		/* then - 검증 */
+		DocumentContext dc = JsonPath.parse(response.getBody());
+		String title = dc.read("$.data.title");
+		String author = dc.read("$.data.author");
+
+		System.out.println(response);
+		assertThat(title).isEqualTo("Spring");
+		assertThat(author).isEqualTo("hyun");
+	}
 }
