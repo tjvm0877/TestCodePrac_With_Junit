@@ -98,4 +98,25 @@ class BookApiControllerTest {
 		assertThat(title).isEqualTo("Junit5");
 		assertThat(author).isEqualTo("hyun");
 	}
+
+	@Sql("classpath:db/tableInit.sql")
+	@DisplayName("책 한권 조회")
+	@Test
+	public void getBook() {
+		/* given - 데이터 준비 */
+
+		/* when - 테스트 실행 */
+		HttpEntity<String> request = new HttpEntity<>(null, headers);
+		ResponseEntity<String> response = rt.exchange("/api/v1/book/1", HttpMethod.GET, request,String.class);
+
+		/* then - 검증 */
+		DocumentContext dc = JsonPath.parse(response.getBody());
+		String result = dc.read("$.result");
+		String title = dc.read("$.data.title");
+		String author = dc.read("$.data.author");
+
+		assertThat(result).isEqualTo("success");
+		assertThat(title).isEqualTo("Junit5");
+		assertThat(author).isEqualTo("hyun");
+	}
 }
