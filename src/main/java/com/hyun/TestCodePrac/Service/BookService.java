@@ -2,14 +2,13 @@ package com.hyun.TestCodePrac.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hyun.TestCodePrac.Entity.Book;
-import com.hyun.TestCodePrac.dto.BookRespDto;
-import com.hyun.TestCodePrac.dto.BookSaveReqDto;
+import com.hyun.TestCodePrac.dto.response.BookRespDto;
+import com.hyun.TestCodePrac.dto.request.BookSaveReqDto;
 import com.hyun.TestCodePrac.repository.BookRepository;
 import com.hyun.TestCodePrac.util.MailSender;
 
@@ -67,11 +66,13 @@ public class BookService {
 
 	// 5. 책 수정
 	@Transactional(rollbackFor = RuntimeException.class)
-	public void updateBook(Long id, BookSaveReqDto dto) {
+	public BookRespDto updateBook(Long id, BookSaveReqDto dto) {
 		Book bookPS = bookRepository.findById(id).orElseThrow(
 			() -> new IllegalArgumentException("해당 책을 찾을 수 없습니다.")
 		);
 
 		bookPS.update(dto.getTitle(), dto.getAuthor());
+
+		return BookRespDto.from(bookPS);
 	} // 메서드 종료시에 더티채킹(flush)으로 업데이트
 }

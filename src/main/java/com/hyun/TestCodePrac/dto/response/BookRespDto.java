@@ -1,4 +1,4 @@
-package com.hyun.TestCodePrac.dto;
+package com.hyun.TestCodePrac.dto.response;
 
 import com.hyun.TestCodePrac.Entity.Book;
 

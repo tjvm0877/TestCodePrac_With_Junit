@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,15 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.hyun.TestCodePrac.Entity.Book;
-import com.hyun.TestCodePrac.dto.BookRespDto;
-import com.hyun.TestCodePrac.dto.BookSaveReqDto;
+import com.hyun.TestCodePrac.dto.response.BookRespDto;
+import com.hyun.TestCodePrac.dto.request.BookSaveReqDto;
 import com.hyun.TestCodePrac.repository.BookRepository;
 import com.hyun.TestCodePrac.util.MailSender;
-import com.hyun.TestCodePrac.util.MailSenderStub;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
@@ -40,9 +36,7 @@ class BookServiceTest {
 	@DisplayName("책 등록하기")
 	void createBook() {
 		/* given - 데이터 준비 */
-		BookSaveReqDto dto = new BookSaveReqDto();
-		dto.setTitle("JUnit");
-		dto.setAuthor("hyun");
+		BookSaveReqDto dto = new BookSaveReqDto("JUnit", "hyun");
 
 		// 가짜 객체들의 행동 정의
 		when(bookRepository.save(any())).thenReturn(dto.toEntity());
@@ -83,14 +77,14 @@ class BookServiceTest {
 	void getBook() {
 		/* given - 데이터 준비 */
 		Long id = 1L;
+
+		// 가짜 객체의 행동 정의
 		Book book = Book.builder()
 			.id(1L)
 			.title("JUnit")
 			.author("hyun")
 			.build();
 		Optional<Book> bookOP = Optional.of(book);
-
-		// 가짜 객체의 행동 정의
 		when(bookRepository.findById(id)).thenReturn(bookOP);
 
 		/* when - 테스트 실행 */
@@ -99,5 +93,29 @@ class BookServiceTest {
 		/* then - 검증 */
 		assertThat(bookRespDto.getTitle()).isEqualTo(book.getTitle());
 		assertThat(bookRespDto.getAuthor()).isEqualTo(book.getAuthor());
+	}
+
+	@Test
+	@DisplayName("책 수정")
+	void updateBook() {
+		/* given - 데이터 준비 */
+		Long id = 1L;
+		BookSaveReqDto dto = new BookSaveReqDto("JUnit", "jae");
+
+		// 가짜 객체의 행동 정의
+		Book book = Book.builder()
+			.id(1L)
+			.title("Spring Boot")
+			.author("hyun")
+			.build();
+		Optional<Book> bookOP = Optional.of(book);
+		when(bookRepository.findById(id)).thenReturn(bookOP);
+
+		/* when - 테스트 실행 */
+		BookRespDto bookRespDto = bookService.updateBook(id, dto);
+
+		/* then - 검증 */
+		assertThat(bookRespDto.getTitle()).isEqualTo(dto.getTitle());
+		assertThat(bookRespDto.getAuthor()).isEqualTo(dto.getAuthor());
 	}
 }
