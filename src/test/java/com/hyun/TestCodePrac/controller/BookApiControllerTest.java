@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.lang.annotation.Documented;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hyun.TestCodePrac.Entity.Book;
 import com.hyun.TestCodePrac.Service.BookService;
 import com.hyun.TestCodePrac.dto.request.BookSaveReqDto;
+import com.hyun.TestCodePrac.repository.BookRepository;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
@@ -30,6 +34,9 @@ class BookApiControllerTest {
 	@Autowired
 	TestRestTemplate rt;
 
+	@Autowired
+	private BookRepository bookRepository;
+
 	private static ObjectMapper om;
 	private static HttpHeaders headers;
 
@@ -38,6 +45,17 @@ class BookApiControllerTest {
 		om = new ObjectMapper();
 		headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
+	}
+
+	@BeforeEach
+	public void dataSet() {
+		String title = "Junit5";
+		String author = "hyun";
+		Book book = Book.builder()
+			.title(title)
+			.author(author)
+			.build();
+		bookRepository.save(book);
 	}
 
 	@DisplayName("책 등록")
@@ -57,6 +75,27 @@ class BookApiControllerTest {
 		String author = dc.read("$.data.author");
 
 		assertThat(title).isEqualTo("스프링");
+		assertThat(author).isEqualTo("hyun");
+	}
+
+	@Sql("classpath:db/tableInit.sql")
+	@DisplayName("책 목록조회")
+	@Test
+	public void getBookList() {
+		/* given - 데이터 준비 */
+
+		/* when - 테스트 실행 */
+		HttpEntity<String> request = new HttpEntity<>(null, headers);
+		ResponseEntity<String> response = rt.exchange("/api/v1/book", HttpMethod.GET, request,String.class);
+
+		/* then - 검증 */
+		DocumentContext dc = JsonPath.parse(response.getBody());
+		String result = dc.read("$.result");
+		String title = dc.read("$.data.items[0].title");
+		String author = dc.read("$.data.items[0].author");
+
+		assertThat(result).isEqualTo("success");
+		assertThat(title).isEqualTo("Junit5");
 		assertThat(author).isEqualTo("hyun");
 	}
 }
