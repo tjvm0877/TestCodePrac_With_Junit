@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -67,5 +68,16 @@ public class BookApiController {
 	}
 
 	// 4. 책 삭제
+	@DeleteMapping("/book/{id}")
+	public ResponseEntity<?> deleteBook(@PathVariable Long id) {
+		bookService.deleteBook(id);
+		CMResponseDto response = CMResponseDto.builder()
+			.result("success")
+			.msg("책 삭제 조회 성공")
+			.data(null)
+			.build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
 	// 5. 책 수정
 }
