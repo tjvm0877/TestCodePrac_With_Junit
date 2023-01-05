@@ -1,8 +1,10 @@
 package com.hyun.TestCodePrac.util;
 
-// 아직 구현되지 않음
-// public class Mail {
-// 	public boolean sendMail() {
-// 		return true;
-// 	}
-// }
+import org.springframework.stereotype.Component;
+
+// 구현되었다고 가정
+public class Mail {
+	public boolean sendMail() {
+		return true;
+	}
+}
