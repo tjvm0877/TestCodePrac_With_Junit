@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.hyun.TestCodePrac.Entity.Book;
+import com.hyun.TestCodePrac.dto.response.BookListRespDto;
 import com.hyun.TestCodePrac.dto.response.BookRespDto;
 import com.hyun.TestCodePrac.dto.request.BookSaveReqDto;
 import com.hyun.TestCodePrac.repository.BookRepository;
@@ -63,13 +64,13 @@ class BookServiceTest {
 		when(bookRepository.findAll()).thenReturn(books);
 
 		/* when - 테스트 실행 */
-		List<BookRespDto> bookRespDtoList = bookService.getBookList();
+		BookListRespDto bookListRespDto = bookService.getBookList();
 
 		/* then - 검증 */
-		assertThat(bookRespDtoList.get(0).getTitle()).isEqualTo("JUnit");
-		assertThat(bookRespDtoList.get(1).getTitle()).isEqualTo("Spring Boot");
-		assertThat(bookRespDtoList.get(0).getAuthor()).isEqualTo("hyun");
-		assertThat(bookRespDtoList.get(1).getAuthor()).isEqualTo("hyun");
+		assertThat(bookListRespDto.getItems().get(0).getTitle()).isEqualTo("JUnit");
+		assertThat(bookListRespDto.getItems().get(1).getTitle()).isEqualTo("Spring Boot");
+		assertThat(bookListRespDto.getItems().get(0).getAuthor()).isEqualTo("hyun");
+		assertThat(bookListRespDto.getItems().get(1).getAuthor()).isEqualTo("hyun");
 	}
 
 	@Test

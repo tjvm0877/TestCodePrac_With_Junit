@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hyun.TestCodePrac.Entity.Book;
+import com.hyun.TestCodePrac.dto.response.BookListRespDto;
 import com.hyun.TestCodePrac.dto.response.BookRespDto;
 import com.hyun.TestCodePrac.dto.request.BookSaveReqDto;
 import com.hyun.TestCodePrac.repository.BookRepository;
@@ -37,7 +38,7 @@ public class BookService {
 
 	// 2. 책 목록조회
 	@Transactional(readOnly = true)
-	public List<BookRespDto> getBookList() {
+	public BookListRespDto getBookList() {
 		List<Book> bookList = bookRepository.findAll();
 
 		List<BookRespDto> response = new ArrayList<>();
@@ -45,7 +46,8 @@ public class BookService {
 			response.add(BookRespDto.from(book));
 		}
 
-		return response;
+		BookListRespDto bookListRespDto = new BookListRespDto(response);
+		return bookListRespDto;
 	}
 
 	// 3. 책 한권 조회

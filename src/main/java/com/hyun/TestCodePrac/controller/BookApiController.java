@@ -1,16 +1,21 @@
 package com.hyun.TestCodePrac.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hyun.TestCodePrac.Service.BookService;
+import com.hyun.TestCodePrac.dto.response.BookListRespDto;
 import com.hyun.TestCodePrac.dto.response.BookRespDto;
 import com.hyun.TestCodePrac.dto.request.BookSaveReqDto;
 import com.hyun.TestCodePrac.dto.response.CMResponseDto;
@@ -28,21 +33,39 @@ public class BookApiController {
 	// 1. 책 등록
 	@PostMapping("/book")
 	public ResponseEntity<?> createBook(@Valid @RequestBody BookSaveReqDto bookSaveReqDto) {
-		BookRespDto response = bookService.createBook(bookSaveReqDto);
-		CMResponseDto<?> cmresponseDto = CMResponseDto.builder()
+		BookRespDto book = bookService.createBook(bookSaveReqDto);
+		CMResponseDto<?> response = CMResponseDto.builder()
 			.result("success")
 			.msg("책 저장 성공")
-			.data(response)
+			.data(book)
 			.build();
-
-		return new ResponseEntity<>(cmresponseDto, HttpStatus.CREATED); // 201 = insert
+		return new ResponseEntity<>(response, HttpStatus.CREATED); // 201 = insert
 	}
 
 	// 2. 책 목록조회
-	// public ResponseEntity<?> getBookList() {
-	//
-	// }
+	@GetMapping("/book")
+	public ResponseEntity<?> getBookList() {
+		BookListRespDto bookList = bookService.getBookList();
+		CMResponseDto<?> response = CMResponseDto.builder()
+			.result("success")
+			.msg("책 리스트 조회 성공")
+			.data(bookList)
+			.build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
 	// 3. 책 한권 조회
+	@GetMapping("/book/{id}")
+	public ResponseEntity<?> getBook(@PathVariable Long id) {
+		BookRespDto bookRespDto = bookService.getBook(id);
+		CMResponseDto<?> response = CMResponseDto.builder()
+			.result("success")
+			.msg("책 리스트 조회 성공")
+			.data(bookRespDto)
+			.build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
 	// 4. 책 삭제
 	// 5. 책 수정
 }
